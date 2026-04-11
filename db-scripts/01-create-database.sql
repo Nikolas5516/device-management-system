@@ -3,7 +3,6 @@
 -- Idempotent: Safe to run multiple times
 -- ============================================
 
--- Create database if it doesn't exist
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'DeviceManagerDB')
 BEGIN
     CREATE DATABASE DeviceManagerDB;
@@ -15,10 +14,13 @@ BEGIN
 END
 GO
 
+-- Wait for DB to be ready
+WAITFOR DELAY '00:00:02';
+GO
+
 USE DeviceManagerDB;
 GO
 
--- Create Users table
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Users')
 BEGIN
     CREATE TABLE Users (
@@ -31,7 +33,6 @@ BEGIN
 END
 GO
 
--- Create Devices table
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Devices')
 BEGIN
     CREATE TABLE Devices (
@@ -45,7 +46,6 @@ BEGIN
         RamAmount        NVARCHAR(50)  NOT NULL,
         Description      NVARCHAR(500) NULL,
         AssignedUserId   INT NULL,
-
         CONSTRAINT FK_Device_User
             FOREIGN KEY (AssignedUserId)
             REFERENCES Users(Id)
@@ -55,7 +55,6 @@ BEGIN
 END
 GO
 
--- Create AppUsers table (for Phase 3 auth)
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'AppUsers')
 BEGIN
     CREATE TABLE AppUsers (
@@ -63,7 +62,6 @@ BEGIN
         Email         NVARCHAR(256) NOT NULL,
         PasswordHash  NVARCHAR(500) NOT NULL,
         UserId        INT NULL,
-
         CONSTRAINT UQ_AppUser_Email UNIQUE (Email),
         CONSTRAINT FK_AppUser_User
             FOREIGN KEY (UserId)
@@ -74,6 +72,5 @@ BEGIN
 END
 GO
 
-PRINT '========================================';
 PRINT 'Database setup complete!';
-PRINT '========================================';
+GO
