@@ -1,1 +1,49 @@
-<p>device-list works!</p>
+<div class="device-list-page">
+  <h1>Devices</h1>
+
+  @if (loading) {
+    <p class="status-msg">Loading devices...</p>
+  }
+
+  @if (error) {
+    <p class="error-msg">{{ error }}</p>
+  }
+
+  @if (!loading && devices.length === 0 && !error) {
+    <p class="status-msg">No devices found.</p>
+  }
+
+  @if (!loading && devices.length > 0) {
+    <table class="device-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Manufacturer</th>
+          <th>Type</th>
+          <th>OS</th>
+          <th>Assigned To</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (device of devices; track device.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/devices', device.id]" class="device-link">
+                {{ device.name }}
+              </a>
+            </td>
+            <td>{{ device.manufacturer }}</td>
+            <td>{{ device.type }}</td>
+            <td>{{ device.operatingSystem }} {{ device.osVersion }}</td>
+            <td>{{ device.assignedUserName || 'Unassigned' }}</td>
+            <td class="actions">
+              <a [routerLink]="['/devices', device.id, 'edit']" class="btn btn-edit">Edit</a>
+              <button (click)="deleteDevice(device.id, device.name)" class="btn btn-delete">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
