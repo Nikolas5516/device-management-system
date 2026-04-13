@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DeviceService } from '../../services/device';
@@ -16,7 +16,10 @@ export class DeviceList implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private deviceService: DeviceService) {}
+  constructor(
+    private deviceService: DeviceService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadDevices();
@@ -28,10 +31,12 @@ export class DeviceList implements OnInit {
       next: (data) => {
         this.devices = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = 'Failed to load devices. Make sure the API is running.';
         this.loading = false;
+        this.cdr.detectChanges();
         console.error(err);
       }
     });
@@ -43,9 +48,11 @@ export class DeviceList implements OnInit {
     this.deviceService.delete(id).subscribe({
       next: () => {
         this.devices = this.devices.filter(d => d.id !== id);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = 'Failed to delete device.';
+        this.cdr.detectChanges();
         console.error(err);
       }
     });
