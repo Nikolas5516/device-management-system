@@ -85,6 +85,12 @@ public class DeviceService : IDeviceService
         return true;
     }
 
+    public async Task<bool> ExistsByNameAsync(string name)
+    {
+        return await _context.Devices
+            .AnyAsync(d => d.Name.ToLower() == name.ToLower());
+    }
+
     private static DeviceDto MapToDto(Device device)
     {
         return new DeviceDto

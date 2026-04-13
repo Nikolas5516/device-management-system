@@ -41,6 +41,10 @@ public class DevicesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        // Check for duplicate device name
+        if (await _deviceService.ExistsByNameAsync(dto.Name))
+            return Conflict(new { message = $"A device with the name '{dto.Name}' already exists." });
+
         var device = await _deviceService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = device.Id }, device);
     }
