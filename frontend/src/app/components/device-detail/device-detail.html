@@ -1,1 +1,53 @@
-<p>device-detail works!</p>
+<div class="detail-page">
+  @if (loading) {
+    <p>Loading device...</p>
+  }
+
+  @if (error) {
+    <p class="error-msg">{{ error }}</p>
+    <a routerLink="/devices" class="back-link">&larr; Back to devices</a>
+  }
+
+  @if (device) {
+    <div class="detail-header">
+      <h1>{{ device.name }}</h1>
+      <div class="detail-actions">
+        <a [routerLink]="['/devices', device.id, 'edit']" class="btn btn-edit">Edit</a>
+        <button (click)="deleteDevice()" class="btn btn-delete">Delete</button>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-row">
+        <span class="label">Manufacturer</span>
+        <span class="value">{{ device.manufacturer }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Type</span>
+        <span class="value">{{ device.type }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Operating System</span>
+        <span class="value">{{ device.operatingSystem }} {{ device.osVersion }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Processor</span>
+        <span class="value">{{ device.processor }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">RAM</span>
+        <span class="value">{{ device.ramAmount }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Assigned To</span>
+        <span class="value">{{ device.assignedUserName || 'Unassigned' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Description</span>
+        <span class="value">{{ device.description || 'No description' }}</span>
+      </div>
+    </div>
+
+    <a routerLink="/devices" class="back-link">&larr; Back to devices</a>
+  }
+</div>
