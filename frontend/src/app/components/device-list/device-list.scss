@@ -92,3 +92,20 @@
     background: #fecaca;
   }
 }
+
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-assigned {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-unassigned {
+  background: #f1f5f9;
+  color: #94a3b8;
+}

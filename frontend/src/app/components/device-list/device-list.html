@@ -36,7 +36,13 @@
             <td>{{ device.manufacturer }}</td>
             <td>{{ device.type }}</td>
             <td>{{ device.operatingSystem }} {{ device.osVersion }}</td>
-            <td>{{ device.assignedUserName || 'Unassigned' }}</td>
+            <td>
+              @if (device.assignedUserName) {
+                <span class="badge badge-assigned">{{ device.assignedUserName }}</span>
+              } @else {
+                <span class="badge badge-unassigned">Unassigned</span>
+              }
+            </td>
             <td class="actions">
               <a [routerLink]="['/devices', device.id, 'edit']" class="btn btn-edit">Edit</a>
               <button (click)="deleteDevice(device.id, device.name)" class="btn btn-delete">Delete</button>
