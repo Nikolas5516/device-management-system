@@ -2,7 +2,10 @@
   <h1>Devices</h1>
 
   @if (loading) {
-    <p class="status-msg">Loading devices...</p>
+    <div class="loading-row">
+      <span class="spinner"></span>
+      <span>Loading devices...</span>
+    </div>
   }
 
   @if (error) {
@@ -51,5 +54,11 @@
         }
       </tbody>
     </table>
+  }
+
+  @if (toastMessage) {
+  <div class="toast" [class.toast-success]="toastType === 'success'" [class.toast-error]="toastType === 'error'">
+    {{ toastMessage }}
+  </div>
   }
 </div>

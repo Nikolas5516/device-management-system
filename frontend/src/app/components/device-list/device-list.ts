@@ -15,6 +15,8 @@ export class DeviceList implements OnInit {
   devices: Device[] = [];
   loading = true;
   error = '';
+  toastMessage = '';
+  toastType: 'success' | 'error' = 'success';
 
   constructor(
     private deviceService: DeviceService,
@@ -48,7 +50,7 @@ export class DeviceList implements OnInit {
     this.deviceService.delete(id).subscribe({
       next: () => {
         this.devices = this.devices.filter(d => d.id !== id);
-        this.cdr.detectChanges();
+        this.showToast(`"${name}" deleted successfully.`, 'success');
       },
       error: (err) => {
         this.error = 'Failed to delete device.';
@@ -56,5 +58,15 @@ export class DeviceList implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  private showToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.toastMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }
