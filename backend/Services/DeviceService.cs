@@ -91,6 +91,43 @@ public class DeviceService : IDeviceService
             .AnyAsync(d => d.Name.ToLower() == name.ToLower());
     }
 
+    public async Task<DeviceDto?> AssignToUserAsync(int deviceId, int userId)
+    {
+        var device = await _context.Devices
+            .Include(d => d.AssignedUser)
+            .FirstOrDefaultAsync(d => d.Id == deviceId);
+
+        if (device == null) return null;
+
+        // Device already assigned to someone
+        if (device.AssignedUserId != null)
+            return null;
+
+        device.AssignedUserId = userId;
+        await _context.SaveChangesAsync();
+
+        await _context.Entry(device).Reference(d => d.AssignedUser).LoadAsync();
+        return MapToDto(device);
+    }
+
+    public async Task<DeviceDto?> UnassignAsync(int deviceId, int userId)
+    {
+        var device = await _context.Devices
+            .Include(d => d.AssignedUser)
+            .FirstOrDefaultAsync(d => d.Id == deviceId);
+
+        if (device == null) return null;
+
+        // Can only unassign if the device is assigned to this user
+        if (device.AssignedUserId != userId)
+            return null;
+
+        device.AssignedUserId = null;
+        await _context.SaveChangesAsync();
+
+        return MapToDto(device);
+    }
+
     private static DeviceDto MapToDto(Device device)
     {
         return new DeviceDto

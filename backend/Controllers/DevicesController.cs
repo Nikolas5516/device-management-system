@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using DeviceManager.API.DTOs;
 using DeviceManager.API.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviceManager.API.Controllers;
 
@@ -72,5 +74,41 @@ public class DevicesController : ControllerBase
             return NotFound(new { message = $"Device with ID {id} not found." });
 
         return NoContent();
+    }
+
+    // POST: api/devices/5/assign
+    [Authorize]
+    [HttpPost("{id}/assign")]
+    public async Task<ActionResult<DeviceDto>> Assign(int id)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        var userId = int.Parse(userIdClaim);
+        var device = await _deviceService.AssignToUserAsync(id, userId);
+
+        if (device == null)
+            return BadRequest(new { message = "Device not found or already assigned to another user." });
+
+        return Ok(device);
+    }
+
+    // POST: api/devices/5/unassign
+    [Authorize]
+    [HttpPost("{id}/unassign")]
+    public async Task<ActionResult<DeviceDto>> Unassign(int id)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        var userId = int.Parse(userIdClaim);
+        var device = await _deviceService.UnassignAsync(id, userId);
+
+        if (device == null)
+            return BadRequest(new { message = "Device not found or not assigned to you." });
+
+        return Ok(device);
     }
 }
