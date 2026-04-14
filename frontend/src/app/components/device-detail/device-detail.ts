@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DeviceService } from '../../services/device';
@@ -19,7 +19,8 @@ export class DeviceDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -34,10 +35,12 @@ export class DeviceDetail implements OnInit {
       next: (data) => {
         this.device = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'Device not found.';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -48,7 +51,10 @@ export class DeviceDetail implements OnInit {
 
     this.deviceService.delete(this.device.id).subscribe({
       next: () => this.router.navigate(['/devices']),
-      error: () => this.error = 'Failed to delete device.'
+      error: () => {
+        this.error = 'Failed to delete device.';
+        this.cdr.detectChanges();
+      }
     });
   }
 }
