@@ -1,1 +1,117 @@
-<p>device-form works!</p>
+<div class="form-page">
+  <h1>{{ isEditMode ? 'Edit Device' : 'Add New Device' }}</h1>
+
+  @if (loading) {
+    <p>Loading device data...</p>
+  }
+
+  @if (error) {
+    <div class="error-msg">{{ error }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success-msg">{{ successMessage }}</div>
+  }
+
+  @if (!loading) {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="device-form">
+
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">Name *</label>
+        <input id="name" formControlName="name" type="text"
+               placeholder="e.g. iPhone 15 Pro"
+               [class.input-error]="isFieldInvalid('name')">
+        @if (isFieldInvalid('name')) {
+          <span class="field-error">{{ getFieldError('name') }}</span>
+        }
+      </div>
+
+      <!-- Manufacturer -->
+      <div class="form-group">
+        <label for="manufacturer">Manufacturer *</label>
+        <input id="manufacturer" formControlName="manufacturer" type="text"
+               placeholder="e.g. Apple"
+               [class.input-error]="isFieldInvalid('manufacturer')">
+        @if (isFieldInvalid('manufacturer')) {
+          <span class="field-error">{{ getFieldError('manufacturer') }}</span>
+        }
+      </div>
+
+      <!-- Type (dropdown) -->
+      <div class="form-group">
+        <label for="type">Type *</label>
+        <select id="type" formControlName="type"
+                [class.input-error]="isFieldInvalid('type')">
+          <option value="" disabled>Select device type</option>
+          @for (t of deviceTypes; track t) {
+            <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('type')) {
+          <span class="field-error">{{ getFieldError('type') }}</span>
+        }
+      </div>
+
+      <!-- Operating System -->
+      <div class="form-group">
+        <label for="operatingSystem">Operating System *</label>
+        <input id="operatingSystem" formControlName="operatingSystem" type="text"
+               placeholder="e.g. iOS, Android, Windows"
+               [class.input-error]="isFieldInvalid('operatingSystem')">
+        @if (isFieldInvalid('operatingSystem')) {
+          <span class="field-error">{{ getFieldError('operatingSystem') }}</span>
+        }
+      </div>
+
+      <!-- OS Version -->
+      <div class="form-group">
+        <label for="osVersion">OS Version *</label>
+        <input id="osVersion" formControlName="osVersion" type="text"
+               placeholder="e.g. 17.4"
+               [class.input-error]="isFieldInvalid('osVersion')">
+        @if (isFieldInvalid('osVersion')) {
+          <span class="field-error">{{ getFieldError('osVersion') }}</span>
+        }
+      </div>
+
+      <!-- Processor -->
+      <div class="form-group">
+        <label for="processor">Processor *</label>
+        <input id="processor" formControlName="processor" type="text"
+               placeholder="e.g. A17 Pro"
+               [class.input-error]="isFieldInvalid('processor')">
+        @if (isFieldInvalid('processor')) {
+          <span class="field-error">{{ getFieldError('processor') }}</span>
+        }
+      </div>
+
+      <!-- RAM Amount -->
+      <div class="form-group">
+        <label for="ramAmount">RAM Amount *</label>
+        <input id="ramAmount" formControlName="ramAmount" type="text"
+               placeholder="e.g. 8GB"
+               [class.input-error]="isFieldInvalid('ramAmount')">
+        @if (isFieldInvalid('ramAmount')) {
+          <span class="field-error">{{ getFieldError('ramAmount') }}</span>
+        }
+      </div>
+
+      <!-- Description (optional) -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" rows="3"
+                  placeholder="Optional device description"></textarea>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="submitting">
+          {{ submitting ? 'Saving...' : (isEditMode ? 'Update Device' : 'Create Device') }}
+        </button>
+        <a routerLink="/devices" class="btn btn-cancel">Cancel</a>
+      </div>
+
+    </form>
+  }
+</div>
