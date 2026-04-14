@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Device> Devices { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<AppUser> AppUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +22,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Device>()
             .Property(d => d.OperatingSystem)
             .HasColumnName("OperatingSystem");
+
+        modelBuilder.Entity<AppUser>()
+            .HasIndex(a => a.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<AppUser>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
