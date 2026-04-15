@@ -89,3 +89,31 @@
 
   &:hover { background: #fecaca; }
 }
+
+.btn-assign {
+  background: #dcfce7;
+  color: #15803d;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover:not(:disabled) { background: #bbf7d0; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.btn-unassign {
+  background: #fef3c7;
+  color: #92400e;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover:not(:disabled) { background: #fde68a; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}

@@ -14,6 +14,16 @@
       <div class="detail-actions">
         <a [routerLink]="['/devices', device.id, 'edit']" class="btn btn-edit">Edit</a>
         <button (click)="deleteDevice()" class="btn btn-delete">Delete</button>
+        @if (canAssign()) {
+          <button (click)="assignDevice()" class="btn btn-assign" [disabled]="assigning">
+            {{ assigning ? 'Assigning...' : 'Assign to me' }}
+          </button>
+        }
+        @if (canUnassign()) {
+          <button (click)="unassignDevice()" class="btn btn-unassign" [disabled]="assigning">
+            {{ assigning ? 'Unassigning...' : 'Unassign' }}
+          </button>
+        }
       </div>
     </div>
 
