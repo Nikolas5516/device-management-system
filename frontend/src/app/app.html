@@ -1,8 +1,15 @@
 <nav class="navbar">
   <a routerLink="/devices" class="nav-brand">Device Manager</a>
   <div class="nav-links">
-    <a routerLink="/devices" class="nav-link">All Devices</a>
-    <a routerLink="/devices/new" class="nav-link nav-link-primary">+ Add Device</a>
+    @if (currentUser) {
+      <a routerLink="/devices" class="nav-link">All Devices</a>
+      <a routerLink="/devices/new" class="nav-link nav-link-primary">+ Add Device</a>
+      <span class="nav-user">{{ currentUser.name }}</span>
+      <button (click)="logout()" class="nav-link nav-link-logout">Logout</button>
+    } @else {
+      <a routerLink="/login" class="nav-link">Login</a>
+      <a routerLink="/register" class="nav-link nav-link-primary">Register</a>
+    }
   </div>
 </nav>
 
