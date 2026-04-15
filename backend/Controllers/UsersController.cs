@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using DeviceManager.API.DTOs;
 using DeviceManager.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviceManager.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;

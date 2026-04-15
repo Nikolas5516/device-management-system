@@ -8,6 +8,7 @@ namespace DeviceManager.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DevicesController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
