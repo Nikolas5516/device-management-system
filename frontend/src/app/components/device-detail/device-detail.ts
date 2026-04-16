@@ -18,6 +18,7 @@ export class DeviceDetail implements OnInit {
   error = '';
   currentUserId: number | null = null;
   assigning = false;
+  generating = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -106,6 +107,24 @@ export class DeviceDetail implements OnInit {
       error: (err) => {
         this.error = err.error?.message || 'Failed to unassign device.';
         this.assigning = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  generateDescription(): void {
+    if (!this.device) return;
+    this.generating = true;
+
+    this.deviceService.generateDescription(this.device.id).subscribe({
+      next: (result) => {
+        this.device = result.device;
+        this.generating = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to generate description.';
+        this.generating = false;
         this.cdr.detectChanges();
       }
     });

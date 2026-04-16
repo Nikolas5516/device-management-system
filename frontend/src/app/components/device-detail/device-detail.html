@@ -54,7 +54,14 @@
       </div>
       <div class="detail-row">
         <span class="label">Description</span>
-        <span class="value">{{ device.description || 'No description' }}</span>
+        <span class="value">
+          {{ device.description || 'No description' }}
+          <button (click)="generateDescription()" 
+                  class="btn btn-ai" 
+                  [disabled]="generating">
+            {{ generating ? 'Generating...' : (device.description ? 'Regenerate' : 'Generate with AI') }}
+          </button>
+        </span>
       </div>
     </div>
 

@@ -117,3 +117,19 @@
   &:hover:not(:disabled) { background: #fde68a; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
+
+.btn-ai {
+  margin-left: 0.75rem;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  border: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
