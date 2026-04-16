@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DeviceService } from '../../services/device';
 import { Device } from '../../models/device.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-device-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './device-list.html',
   styleUrl: './device-list.scss'
 })
@@ -17,6 +18,8 @@ export class DeviceList implements OnInit {
   error = '';
   toastMessage = '';
   toastType: 'success' | 'error' = 'success';
+  searchQuery = '';
+  searchTimeout: any = null;
 
   constructor(
     private deviceService: DeviceService,
@@ -68,5 +71,29 @@ export class DeviceList implements OnInit {
       this.toastMessage = '';
       this.cdr.detectChanges();
     }, 3000);
+  }
+
+  onSearch(): void {
+    // Debounce: wait 300ms after user stops typing
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      if (this.searchQuery.trim()) {
+        this.loading = true;
+        this.deviceService.search(this.searchQuery).subscribe({
+          next: (data) => {
+            this.devices = data;
+            this.loading = false;
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.error = 'Search failed.';
+            this.loading = false;
+            this.cdr.detectChanges();
+          }
+        });
+      } else {
+        this.loadDevices();
+      }
+    }, 300);
   }
 }

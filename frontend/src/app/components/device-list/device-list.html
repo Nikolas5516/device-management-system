@@ -6,6 +6,17 @@
     }
   </div>
 
+  <div class="search-bar">
+    <input type="text"
+           [(ngModel)]="searchQuery"
+           (input)="onSearch()"
+           placeholder="Search devices by name, manufacturer, processor, RAM..."
+           class="search-input">
+    @if (searchQuery) {
+      <button (click)="searchQuery = ''; loadDevices()" class="search-clear">×</button>
+    }
+  </div>
+
   @if (loading) {
     <div class="loading-row">
       <span class="spinner"></span>

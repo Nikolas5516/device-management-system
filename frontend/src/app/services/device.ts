@@ -45,4 +45,8 @@ export class DeviceService {
       `${this.apiUrl}/${id}/generate-description`, {}
     );
   }
+
+  search(query: string): Observable<Device[]> {
+    return this.http.get<Device[]>(`${this.apiUrl}/search?q=${encodeURIComponent(query)}`);
+  }
 }
