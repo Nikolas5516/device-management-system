@@ -12,10 +12,12 @@ namespace DeviceManager.API.Controllers;
 public class DevicesController : ControllerBase
 {
     private readonly IDeviceService _deviceService;
+    private readonly IAiDescriptionService _aiService;
 
-    public DevicesController(IDeviceService deviceService)
+    public DevicesController(IDeviceService deviceService, IAiDescriptionService aiService)
     {
         _deviceService = deviceService;
+        _aiService = aiService;
     }
 
     // GET: api/devices
@@ -111,5 +113,41 @@ public class DevicesController : ControllerBase
             return BadRequest(new { message = "Device not found or not assigned to you." });
 
         return Ok(device);
+    }
+
+    // POST: api/devices/5/generate-description
+    [HttpPost("{id}/generate-description")]
+    public async Task<ActionResult> GenerateDescription(int id)
+    {
+        var device = await _deviceService.GetByIdAsync(id);
+        if (device == null)
+            return NotFound(new { message = $"Device with ID {id} not found." });
+
+        try
+        {
+            var description = await _aiService.GenerateDescriptionAsync(
+                device.Name, device.Manufacturer, device.Type,
+                device.OperatingSystem, device.Processor, device.RamAmount);
+
+            // Save the description
+            var updateDto = new DTOs.UpdateDeviceDto
+            {
+                Name = device.Name,
+                Manufacturer = device.Manufacturer,
+                Type = device.Type,
+                OperatingSystem = device.OperatingSystem,
+                OsVersion = device.OsVersion,
+                Processor = device.Processor,
+                RamAmount = device.RamAmount,
+                Description = description
+            };
+
+            var updated = await _deviceService.UpdateAsync(id, updateDto);
+            return Ok(new { description = description, device = updated });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Failed to generate description.", error = ex.Message });
+        }
     }
 }
