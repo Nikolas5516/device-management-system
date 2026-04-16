@@ -128,6 +128,57 @@ public class DeviceService : IDeviceService
         return MapToDto(device);
     }
 
+    public async Task<IEnumerable<DeviceDto>> SearchAsync(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return await GetAllAsync();
+
+        // Step 1: Normalize the query — lowercase, remove punctuation, split into tokens
+        var normalizedQuery = new string(query
+            .ToLower()
+            .Select(c => char.IsLetterOrDigit(c) || c == ' ' || c == '.' ? c : ' ')
+            .ToArray());
+
+        var tokens = normalizedQuery
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Distinct()
+            .ToList();
+
+        if (tokens.Count == 0)
+            return await GetAllAsync();
+
+        // Step 2: Load all devices
+        var devices = await _context.Devices
+            .Include(d => d.AssignedUser)
+            .ToListAsync();
+
+        // Step 3: Score each device
+        // Weights: Name=4, Manufacturer=3, Processor=2, RAM=1
+        var scored = devices.Select(device =>
+        {
+            int score = 0;
+            var nameLower = device.Name.ToLower();
+            var mfgLower = device.Manufacturer.ToLower();
+            var procLower = device.Processor.ToLower();
+            var ramLower = device.RamAmount.ToLower();
+
+            foreach (var token in tokens)
+            {
+                if (nameLower.Contains(token))      score += 4;
+                if (mfgLower.Contains(token))       score += 3;
+                if (procLower.Contains(token))       score += 2;
+                if (ramLower.Contains(token))        score += 1;
+            }
+
+            return new { Device = device, Score = score };
+        })
+        .Where(x => x.Score > 0)
+        .OrderByDescending(x => x.Score)
+        .Select(x => MapToDto(x.Device));
+
+        return scored;
+    }
+
     private static DeviceDto MapToDto(Device device)
     {
         return new DeviceDto

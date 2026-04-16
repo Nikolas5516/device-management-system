@@ -12,4 +12,5 @@ public interface IDeviceService
     Task<bool> ExistsByNameAsync(string name);
     Task<DeviceDto?> AssignToUserAsync(int deviceId, int userId);
     Task<DeviceDto?> UnassignAsync(int deviceId, int userId);
+    Task<IEnumerable<DeviceDto>> SearchAsync(string query);
 }

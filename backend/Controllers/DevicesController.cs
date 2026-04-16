@@ -150,4 +150,15 @@ public class DevicesController : ControllerBase
             return StatusCode(500, new { message = "Failed to generate description.", error = ex.Message });
         }
     }
+
+    // GET: api/devices/search?q=apple phone
+    [HttpGet("search")]
+    public async Task<ActionResult<IEnumerable<DeviceDto>>> Search([FromQuery] string q)
+    {
+        if (string.IsNullOrWhiteSpace(q))
+            return Ok(await _deviceService.GetAllAsync());
+
+        var results = await _deviceService.SearchAsync(q);
+        return Ok(results);
+    }
 }
